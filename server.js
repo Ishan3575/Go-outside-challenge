@@ -389,6 +389,16 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Reset demo state (for easy re-testing)
+  if (pathname === '/api/reset' && (req.method === 'GET' || req.method === 'POST')) {
+    userState.totalPoints = 190;
+    userState.completedChallengesCount = 1;
+    userState.completedChallenges = ['ch-explore-01'];
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ success: true, message: 'User state reset to demo initial state.', user: userState }));
+    return;
+  }
+
   // Get Challenges with Live Bonus Calculations
   if (pathname === '/api/challenges' && req.method === 'GET') {
     const now = Date.now();

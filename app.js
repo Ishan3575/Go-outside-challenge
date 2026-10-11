@@ -504,6 +504,37 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('slot-1-preview').classList.remove('hidden');
       document.getElementById('slot-1-empty').classList.add('hidden');
 
+    } else if (challenge.id === 'ch-nature-01' || challenge.category === 'nature') {
+      // Photo: Wild Ferns & Moss in natural woodland sanctuary
+      fetch('/sample_ferns_moss.jpg')
+        .then(res => res.blob())
+        .then(blob => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const dataUrl = e.target.result;
+            state.slot1Base64 = dataUrl;
+            document.getElementById('slot-1-img').src = dataUrl;
+            document.getElementById('slot-1-preview').classList.remove('hidden');
+            document.getElementById('slot-1-empty').classList.add('hidden');
+            document.getElementById('submission-notes').value = "Identified wild Western Sword Ferns and velvet moss growing along shaded creek rocks at Fern Hollow Sanctuary.";
+          };
+          reader.readAsDataURL(blob);
+        })
+        .catch(() => {
+          // Fallback canvas if offline
+          const c = document.createElement('canvas');
+          c.width = 400; c.height = 300;
+          const ctx = c.getContext('2d');
+          ctx.fillStyle = '#1c3d1b';
+          ctx.fillRect(0, 0, 400, 300);
+          ctx.fillStyle = '#22c55e';
+          ctx.fillText('WILD BOTANICAL DISCOVERY: Ferns & Moss', 14, 285);
+          const dataUrl = c.toDataURL('image/jpeg');
+          state.slot1Base64 = dataUrl;
+          document.getElementById('slot-1-img').src = dataUrl;
+          document.getElementById('slot-1-preview').classList.remove('hidden');
+          document.getElementById('slot-1-empty').classList.add('hidden');
+        });
     } else {
       // Photo: Outdoor park tree & sunny trail
       const c = document.createElement('canvas');
