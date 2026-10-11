@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TerraQuest — Touch Grass with Open-Weight AI</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            forest: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            },
+            earth: {
+              500: '#854d0e',
+              600: '#713f12',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Leaflet Map CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
+
+  <!-- TOP NAVIGATION -->
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20 text-white font-bold">
+          <i data-lucide="sprout" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-emerald-400 via-teal-300 to-green-400 bg-clip-text text-transparent">TerraQuest</span>
+            <span class="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Touch Grass AI</span>
+          </div>
+          <p class="text-xs text-slate-400 hidden sm:block">Gamified Outdoor Exploration & Eco Action</p>
+        </div>
+      </div>
+
+      <!-- User Stats & Actions -->
+      <div class="flex items-center gap-3">
+        <!-- Live Location Indicator -->
+        <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="current-location-text" class="text-slate-300">Detecting GPS...</span>
+          <button id="btn-refresh-gps" title="Re-center GPS" class="text-slate-400 hover:text-emerald-400 transition-colors">
+            <i data-lucide="locate" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+
+        <!-- Eco Karma Badge -->
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 text-xs font-semibold shadow-inner">
+          <i data-lucide="leaf" class="w-4 h-4 text-emerald-400"></i>
+          <span>Eco Karma: <strong id="user-karma" class="text-emerald-200">1,450</strong></span>
+        </div>
+
+        <!-- Explorer XP Badge -->
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-950/60 border border-amber-500/30 text-amber-300 text-xs font-semibold shadow-inner">
+          <i data-lucide="flame" class="w-4 h-4 text-amber-400"></i>
+          <span>XP: <strong id="user-xp" class="text-amber-200">3,820</strong></span>
+        </div>
+
+        <!-- Why Open AI Button -->
+        <button id="btn-open-pitch" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 flex items-center gap-1.5 transition-colors">
+          <i data-lucide="help-circle" class="w-4 h-4 text-emerald-400"></i>
+          <span class="hidden sm:inline">Why Open AI?</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+    
+    <!-- HERO / ACTIVE MISSION BANNER -->
+    <section class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-950/80 via-slate-900 to-slate-900 border border-emerald-500/30 p-5 sm:p-6 shadow-2xl">
+      <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+        <div class="space-y-2 max-w-2xl">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+              <i data-lucide="sparkles" class="w-3 h-3"></i> Active Challenge
+            </span>
+            <span class="px-2.5 py-0.5 rounded-md text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+              <i data-lucide="clock" class="w-3 h-3"></i> 2x Golden Hour Window: <span id="timer-countdown" class="font-mono">38:42</span>
+            </span>
+            <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30 flex items-center gap-1">
+              <i data-lucide="map-pin" class="w-3 h-3"></i> Powered by SerpApi
+            </span>
+          </div>
+          <h1 id="active-quest-title" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Clear Riverbed Litter at Pine Valley Park
+          </h1>
+          <p id="active-quest-desc" class="text-slate-300 text-sm leading-relaxed">
+            Head to Pine Valley trail entrance. Pick up stray plastic bottles and food packaging, deposit them into the recycling station, and submit Before & After verification photos.
+          </p>
+        </div>
+
+        <!-- Action Controls -->
+        <div class="flex flex-wrap items-center gap-3">
+          <!-- ElevenLabs Audio Companion Button -->
+          <button id="btn-audio-companion" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-semibold text-sm shadow-lg shadow-teal-900/30 transition-all hover:scale-[1.02] active:scale-[0.98]">
+            <i data-lucide="volume-2" id="audio-icon" class="w-4 h-4"></i>
+            <span id="audio-btn-text">Listen Hands-Free (ElevenLabs)</span>
+          </button>
+
+          <!-- Scroll to Upload Button -->
+          <a href="#verification-section" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold text-sm transition-colors">
+            <i data-lucide="camera" class="w-4 h-4 text-emerald-400"></i>
+            <span>Submit Verification Proof</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKSPACE GRID: MAP & QUEST SELECTOR -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- LEFT: INTERACTIVE LEAFLET MAP (7 COLS) -->
+      <section class="lg:col-span-7 bg-slate-900/90 rounded-2xl border border-slate-800 overflow-hidden shadow-xl flex flex-col">
+        <div class="p-4 border-b border-slate-800 bg-slate-900 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i data-lucide="compass" class="w-5 h-5 text-emerald-400"></i>
+            <h2 class="font-bold text-white text-sm sm:text-base">Nearby Outdoor Quests (OpenStreetMap)</h2>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-slate-400">
+            <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Eco
+            <span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 ml-2"></span> Timed
+            <span class="inline-block w-2.5 h-2.5 rounded-full bg-sky-500 ml-2"></span> Trail
+          </div>
+        </div>
+        
+        <!-- The Map Canvas -->
+        <div id="map" class="w-full h-80 sm:h-96 z-10 bg-slate-950"></div>
+        
+        <div class="p-3 bg-slate-950/60 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+          <span>Click any map marker to inspect quest coordinates</span>
+          <span class="text-emerald-400 flex items-center gap-1 font-medium">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> 0 Cloud Tracking &bull; Edge Geofencing
+          </span>
+        </div>
+      </section>
+
+      <!-- RIGHT: QUEST LIST SELECTOR (5 COLS) -->
+      <section class="lg:col-span-5 bg-slate-900/90 rounded-2xl border border-slate-800 overflow-hidden shadow-xl flex flex-col">
+        <div class="p-4 border-b border-slate-800 bg-slate-900 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i data-lucide="list-todo" class="w-5 h-5 text-emerald-400"></i>
+            <h2 class="font-bold text-white text-sm sm:text-base">Available Neighborhood Challenges</h2>
+          </div>
+          <span class="text-xs bg-slate-800 px-2 py-0.5 rounded text-slate-300 font-medium">3 Active</span>
+        </div>
+
+        <div id="quest-list-container" class="p-4 space-y-3 flex-1 overflow-y-auto max-h-[380px]">
+          <!-- Injected via JavaScript -->
+        </div>
+      </section>
+    </div>
+
+    <!-- AI PROOF & VERIFICATION STUDIO (GEMMA OPEN-WEIGHT CORE) -->
+    <section id="verification-section" class="rounded-2xl bg-slate-900 border border-emerald-500/30 overflow-hidden shadow-2xl">
+      <div class="p-5 sm:p-6 border-b border-slate-800 bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <div class="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400">
+              <i data-lucide="cpu" class="w-5 h-5"></i>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold text-white">Open-Weight AI Verification Studio</h2>
+            <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">
+              Google Gemma / PaliGemma Core
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">
+            Pixel-level anti-cheat proof: EXIF metadata extraction + PaliGemma vision models verify genuine real-world impact.
+          </p>
+        </div>
+
+        <!-- 1-Click Quick Demo Button -->
+        <button id="btn-load-sample" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-2 transition-all hover:border-emerald-400 shadow-md">
+          <i data-lucide="wand-2" class="w-4 h-4 text-emerald-400"></i>
+          <span>Load Test Photos (1-Click Demo)</span>
+        </button>
+      </div>
+
+      <div class="p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- PHOTO UPLOAD SLOTS (7 COLS) -->
+        <div class="lg:col-span-7 space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <!-- BEFORE PHOTO CARD -->
+            <div class="rounded-xl border border-dashed border-slate-700 bg-slate-950/50 p-4 flex flex-col items-center justify-center text-center relative group hover:border-emerald-500/50 transition-colors min-h-[220px]">
+              <div id="before-preview-container" class="hidden w-full h-44 rounded-lg overflow-hidden relative">
+                <img id="before-img" class="w-full h-full object-cover rounded-lg" alt="Before Cleanup">
+                <span class="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-600/90 text-white">1. BEFORE (Littered)</span>
+                <button id="btn-remove-before" class="absolute top-2 right-2 p-1 rounded-full bg-slate-900/80 text-slate-300 hover:text-white">
+                  <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+
+              <div id="before-placeholder" class="space-y-2">
+                <div class="w-12 h-12 mx-auto rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-emerald-400 transition-colors">
+                  <i data-lucide="trash-2" class="w-6 h-6"></i>
+                </div>
+                <div class="text-xs font-semibold text-slate-200">Photo 1: Before Cleanup</div>
+                <p class="text-[11px] text-slate-400 max-w-[180px]">Take a photo showing trash or site before you start</p>
+                <label class="inline-flex cursor-pointer px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700 transition-colors">
+                  <i data-lucide="upload" class="w-3.5 h-3.5 mr-1.5 inline"></i> Browse Photo
+                  <input type="file" id="input-before" accept="image/*" class="hidden">
+                </label>
+              </div>
+            </div>
+
+            <!-- AFTER PHOTO CARD -->
+            <div class="rounded-xl border border-dashed border-slate-700 bg-slate-950/50 p-4 flex flex-col items-center justify-center text-center relative group hover:border-emerald-500/50 transition-colors min-h-[220px]">
+              <div id="after-preview-container" class="hidden w-full h-44 rounded-lg overflow-hidden relative">
+                <img id="after-img" class="w-full h-full object-cover rounded-lg" alt="After Cleanup">
+                <span class="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-600/90 text-white">2. AFTER (Cleaned)</span>
+                <button id="btn-remove-after" class="absolute top-2 right-2 p-1 rounded-full bg-slate-900/80 text-slate-300 hover:text-white">
+                  <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+
+              <div id="after-placeholder" class="space-y-2">
+                <div class="w-12 h-12 mx-auto rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-emerald-400 transition-colors">
+                  <i data-lucide="sparkle" class="w-6 h-6"></i>
+                </div>
+                <div class="text-xs font-semibold text-slate-200">Photo 2: After Cleanup</div>
+                <p class="text-[11px] text-slate-400 max-w-[180px]">Take a photo showing the cleaned, pristine area</p>
+                <label class="inline-flex cursor-pointer px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700 transition-colors">
+                  <i data-lucide="upload" class="w-3.5 h-3.5 mr-1.5 inline"></i> Browse Photo
+                  <input type="file" id="input-after" accept="image/*" class="hidden">
+                </label>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- VERIFY ACTION BUTTON -->
+          <button id="btn-run-verification" disabled class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 disabled:opacity-40 disabled:cursor-not-allowed hover:from-emerald-500 hover:to-teal-400 text-white font-bold text-sm shadow-lg shadow-emerald-900/30 flex items-center justify-center gap-2 transition-all">
+            <i data-lucide="check-check" class="w-5 h-5"></i>
+            <span id="verify-button-text">Verify Proof with Open-Weight Gemma</span>
+          </button>
+        </div>
+
+        <!-- AI INFERENCE CONSOLE LOG (5 COLS) -->
+        <div class="lg:col-span-5 bg-slate-950 rounded-xl border border-slate-800 p-4 flex flex-col font-mono text-xs shadow-inner">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800 text-slate-400">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+              <span class="font-bold text-slate-200">Gemma Vision Runtime</span>
+            </div>
+            <span id="ai-status-badge" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Idle</span>
+          </div>
+
+          <!-- Console Stream -->
+          <div id="ai-console-log" class="flex-1 overflow-y-auto space-y-2 py-3 min-h-[180px] max-h-[220px] text-slate-300">
+            <div class="text-slate-500">// Ready to inspect image pixels & EXIF payload...</div>
+            <div class="text-slate-500">// Upload Before & After photos or click "Load Test Photos" above.</div>
+          </div>
+
+          <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
+            <span>Model: google/paligemma-3b-pt-224</span>
+            <span>Latency: ~180ms</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- LEADERBOARDS & ECO IMPACT SECTION -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- COMMUNITY LEADERBOARD (7 COLS) -->
+      <div class="lg:col-span-7 bg-slate-900/90 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
+        <div class="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i data-lucide="trophy" class="w-5 h-5 text-amber-400"></i>
+            <h2 class="font-bold text-white text-base">Community Leaderboard</h2>
+          </div>
+          
+          <!-- Category Selector -->
+          <div class="flex rounded-lg bg-slate-800 p-0.5 text-xs font-semibold">
+            <button id="tab-neighborhood" class="px-3 py-1 rounded-md bg-emerald-600 text-white shadow">Neighborhood Ward</button>
+            <button id="tab-global" class="px-3 py-1 rounded-md text-slate-400 hover:text-white transition-colors">Global Eco</button>
+          </div>
+        </div>
+
+        <div class="p-4 overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead>
+              <tr class="text-slate-400 border-b border-slate-800 pb-2">
+                <th class="py-2.5 px-3 font-semibold">Rank</th>
+                <th class="py-2.5 px-3 font-semibold">Eco Guardian</th>
+                <th class="py-2.5 px-3 font-semibold">Cleanups</th>
+                <th class="py-2.5 px-3 font-semibold text-right">Eco Karma</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-body" class="divide-y divide-slate-800/60 text-slate-200">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SPONSOR ECOSYSTEM & OPEN AI IMPACT (5 COLS) -->
+      <div class="lg:col-span-5 bg-slate-900/90 rounded-2xl border border-slate-800 p-5 space-y-4 shadow-xl flex flex-col justify-between">
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <i data-lucide="award" class="w-5 h-5 text-emerald-400"></i>
+            <h2 class="font-bold text-white text-base">Open-Source Ecosystem</h2>
+          </div>
+          <p class="text-xs text-slate-400 mb-4">
+            TerraQuest unites open-weight models, edge spatial grounding, and accessible speech to keep tech lightweight and outdoor-focused:
+          </p>
+
+          <div class="space-y-2.5 text-xs">
+            <div class="p-3 rounded-xl bg-slate-800/70 border border-slate-700/60 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                <div>
+                  <div class="font-bold text-slate-100">Google Gemma / PaliGemma</div>
+                  <div class="text-[11px] text-slate-400">Open-weight vision & quest generator</div>
+                </div>
+              </div>
+              <span class="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">$200 Category</span>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-800/70 border border-slate-700/60 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
+                <div>
+                  <div class="font-bold text-slate-100">SerpApi Grounding</div>
+                  <div class="text-[11px] text-slate-400">Real-time local park & nature spots</div>
+                </div>
+              </div>
+              <span class="text-[10px] font-bold text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20">$100 Category</span>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-800/70 border border-slate-700/60 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                <div>
+                  <div class="font-bold text-slate-100">ElevenLabs Audio Companion</div>
+                  <div class="text-[11px] text-slate-400">Hands-free outdoor narration</div>
+                </div>
+              </div>
+              <span class="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">$100 Category</span>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-800/70 border border-slate-700/60 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span>
+                <div>
+                  <div class="font-bold text-slate-100">Render Cloud Runtime</div>
+                  <div class="text-[11px] text-slate-400">1-click live web service deployment</div>
+                </div>
+              </div>
+              <span class="text-[10px] font-bold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">$200 Category</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/20 text-xs text-emerald-300/90 flex items-center gap-2">
+          <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+          <span>Ready for hackathon submission with zero proprietary cloud lock-in.</span>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- MODAL: WHY OPEN AI MATTERS -->
+  <div id="pitch-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-xl w-full p-6 space-y-4 shadow-2xl relative">
+      <button id="btn-close-modal" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="flex items-center gap-2.5">
+        <div class="p-2 rounded-xl bg-emerald-500/20 text-emerald-400">
+          <i data-lucide="sparkles" class="w-5 h-5"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white">Why Open Innovation Matters Here</h3>
+      </div>
+
+      <div class="space-y-3 text-sm text-slate-300 leading-relaxed max-h-[60vh] overflow-y-auto pr-1">
+        <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+          <h4 class="font-bold text-emerald-400 mb-1">1. Absolute Neighborhood Privacy</h4>
+          <p class="text-xs text-slate-300">
+            When users take photos of their local alleys, parks, and front yards, uploading raw coordinates and photos to proprietary cloud APIs risks biometric indexing and geolocation profiling. With open-weight models like Google Gemma, inference stays on private nodes or local hardware.
+          </p>
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+          <h4 class="font-bold text-emerald-400 mb-1">2. Zero API Bills for Community Cleanups</h4>
+          <p class="text-xs text-slate-300">
+            Grassroots ecology groups and schools cannot afford recurring per-token bills. Open models run for free forever on volunteer laptops, local community servers, or edge devices.
+          </p>
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+          <h4 class="font-bold text-emerald-400 mb-1">3. Custom Ecological Verification</h4>
+          <p class="text-xs text-slate-300">
+            Open weights allow fine-tuning or specialized prompting for specific regional plant species, invasive weeds, and municipal litter benchmarks without relying on a monolithic black-box provider.
+          </p>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-800 flex justify-end">
+        <button id="btn-dismiss-modal" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs">
+          Got It
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-800 py-6 text-center text-xs text-slate-500 mt-12 bg-slate-950">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        Built with ❤️ for Hecktober 2026 &bull; <strong>TerraQuest</strong> &bull; Theme: <em>Touch Grass</em>
+      </div>
+      <div class="flex items-center gap-4 text-slate-400">
+        <span>Gemma Open-Weights</span>
+        <span>&bull;</span>
+        <span>SerpApi Grounding</span>
+        <span>&bull;</span>
+        <span>ElevenLabs Voice</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
