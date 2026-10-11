@@ -19,14 +19,22 @@ Instead of keeping users trapped in front of screens, WanderWild is built around
 
 ## Demo
 
-- **Live Code Repository:** [github.com/Ishan3575/Go-outside-challenge](https://github.com/Ishan3575/Go-outside-challenge)
-- **Local Demo:** Run `node server.js` and visit `http://localhost:3000`
+- 🎥 **Video Walkthrough (Google Drive):** [Watch the Video Demo Here](https://drive.google.com/drive/folders/1YzxPgqleaiqgVUCLa0RMNYvXy9b02mwK?usp=drive_link)
+- 💻 **Live Code Repository:** [github.com/Ishan3575/Go-outside-challenge](https://github.com/Ishan3575/Go-outside-challenge)
+- 🚀 **Local Quickstart:** Run `node server.js` and visit `http://localhost:3000`
 
-### Interactive Walkthrough Highlights:
-- **Leaflet & OpenStreetMap Canvas:** Interactive exploration map showcasing nearby green spaces with privacy-conscious approximate geofencing.
-- **Dynamic 2× Bonus Windows:** Real-time countdown timers for featured challenges where the **server** verifies timestamps and awards double points.
-- **1-Click Test Photos Studio:** A built-in demo studio that loads realistic test photos (including Before/After park cleanups and wild fern macro shots) for quick verification testing.
-- **Live Multimodal AI Verification:** Real-time visual assessment that checks photo consistency and provides structured feedback.
+> 🎙️ **Note on Audio & Accessibility:** The demo video features synthesized AI voiceover narration and gentle ambient background music. This was intentionally created to ensure crystal-clear acoustic clarity so the video can be easily transcribed, indexed, and evaluated by judges and accessibility screen-readers.
+
+<details>
+<summary><strong>📝 Click to expand the Full Video Narration Transcript</strong></summary>
+
+- **0:00 – 0:25:** *"Welcome to WanderWild, an AI-powered outdoor adventure and exploration platform built for the Hacktoberfest Touch Grass challenge. WanderWild is designed to get people off their screens and into nature."*
+- **0:25 – 0:45:** *"Here on the dashboard, adventurers can choose from four real-world challenge tracks: cleaning up litter, planting seedlings, nature walks, and trail exploration. Featured challenges offer limited-time double bonus points calculated directly on the server."*
+- **0:45 – 1:15:** *"Let's submit a challenge. In the evidence studio, users upload photo proof. Our server-side multimodal vision model, powered by Google Gemini, analyzes the image, checking for soil, seedlings, or cleaned litter, and returns a verified assessment with points awarded."*
+- **1:15 – 1:40:** *"The platform also integrates an interactive Leaflet and OpenStreetMap explorer to reveal nearby parks and public trails. To protect user privacy, exact home coordinates are never exposed—only approximate regional areas are shown on community leaderboards."*
+- **1:40 – 2:49:** *"With community leaderboards, milestone badges, and server-side verification, WanderWild makes taking care of nature fun and rewarding. Step away from the screen, head outside, and touch grass!"*
+
+</details>
 
 ---
 
