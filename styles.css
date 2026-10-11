@@ -1,87 +1,114 @@
-/* Custom Styles for TerraQuest */
+/* Touch Grass — Nature-Inspired Theme & Stylesheet */
 
-/* Smooth scrolling */
-html {
+:root {
+  --color-forest-dark: #14532d;
+  --color-forest-base: #166534;
+  --color-forest-light: #22c55e;
+  --color-mint-light: #dcfce7;
+  --color-cream-bg: #faf7f2;
+  --color-cream-card: #ffffff;
+  --color-earth-accent: #78350f;
+  --color-text-main: #1f2937;
+  --color-text-muted: #6b7280;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--color-cream-bg);
+  color: var(--color-text-main);
   scroll-behavior: smooth;
 }
 
-/* Custom Leaflet Map styling */
-.leaflet-container {
-  font-family: inherit;
-  background-color: #020617;
+/* Subtle organic background pattern */
+.bg-nature-pattern {
+  background-color: #faf7f2;
+  background-image: radial-gradient(#dcfce7 0.75px, transparent 0.75px), radial-gradient(#f0fdf4 0.75px, #faf7f2 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
 }
 
-.custom-marker {
+/* Leaflet Map Customizations */
+.leaflet-container {
+  font-family: inherit;
+  border-radius: 1.25rem;
+}
+
+.touch-grass-marker {
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
   color: white;
-  font-weight: bold;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  transition: transform 0.2s ease-in-out;
+  box-shadow: 0 6px 16px rgba(22, 101, 52, 0.35);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid white;
 }
 
-.custom-marker:hover {
-  transform: scale(1.15);
+.touch-grass-marker:hover {
+  transform: scale(1.18);
+  box-shadow: 0 10px 22px rgba(22, 101, 52, 0.45);
 }
 
-.marker-eco {
-  background: linear-gradient(135deg, #10b981, #059669);
-  border: 2px solid #ecfdf5;
+.marker-cleanup {
+  background: linear-gradient(135deg, #16a34a, #15803d);
 }
 
-.marker-timed {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  border: 2px solid #fffbeb;
+.marker-planting {
+  background: linear-gradient(135deg, #059669, #047857);
 }
 
-.marker-trail {
-  background: linear-gradient(135deg, #0ea5e9, #0284c7);
-  border: 2px solid #f0f9ff;
+.marker-explore {
+  background: linear-gradient(135deg, #d97706, #b45309);
+}
+
+.marker-nature {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
 }
 
 .leaflet-popup-content-wrapper {
-  background: #0f172a !important;
-  color: #f8fafc !important;
-  border: 1px solid #334155 !important;
-  border-radius: 12px !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+  background: #ffffff !important;
+  color: #1f2937 !important;
+  border-radius: 1rem !important;
+  padding: 4px !important;
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid #e5e7eb !important;
 }
 
 .leaflet-popup-tip {
-  background: #0f172a !important;
+  background: #ffffff !important;
+}
+
+/* Pulse animation for active bonus challenges */
+@keyframes bonus-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.4);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 8px rgba(234, 179, 8, 0);
+  }
+}
+
+.animate-bonus-glow {
+  animation: bonus-pulse 2.5s infinite;
 }
 
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #f1ede4;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
+  background: #cbd5e1;
+  border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
-}
-
-/* Pulse animation for active mission marker */
-@keyframes quest-pulse {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
-  }
-  50% {
-    box-shadow: 0 0 0 12px rgba(16, 185, 129, 0);
-  }
-}
-
-.pulse-active {
-  animation: quest-pulse 2s infinite;
+  background: #94a3b8;
 }

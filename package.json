@@ -1,0 +1,23 @@
+{
+  "name": "touch-grass",
+  "version": "1.0.0",
+  "description": "An AI-Powered Outdoor Challenge Platform — Gamified Nature Exploration, Community Action & Multimodal Verification",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "touch-grass",
+    "outdoor-challenges",
+    "open-weight-ai",
+    "gemini",
+    "gemma",
+    "leaflet",
+    "environmental-action",
+    "gamification"
+  ],
+  "author": "Ishan3575",
+  "license": "MIT"
+}

@@ -1,0 +1,183 @@
+# Project: Touch Grass — An AI-Powered Outdoor Challenge Platform
+
+## Project Overview
+
+Build a modern, interactive website called **Touch Grass**, a gamified platform that encourages people to spend more time outdoors, explore their surroundings, take care of nature, and perform small positive actions in their communities.
+
+The idea is to combine outdoor exploration, environmental responsibility, community participation, and open-weight AI verification into one engaging experience.
+
+The website should make outdoor activities fun by turning them into challenges that users can complete to earn points, climb leaderboards, and contribute to their local environment.
+
+## 1. Website Design and User Experience
+
+Create a polished, responsive, modern website that works on desktop and mobile devices.
+
+The design should feel fresh, outdoorsy, and welcoming, using nature-inspired colours such as forest green, light green, cream, and earthy neutrals. Use clean typography, rounded cards, subtle animations, attractive icons, and a map-centred exploration experience.
+
+The landing page should include:
+- A clear introduction to Touch Grass and its mission.
+- A prominent button to explore nearby places and challenges.
+- Featured outdoor challenges.
+- The user's points and progress.
+- A preview of local and global leaderboards.
+- A simple explanation of how challenges work.
+
+Avoid making the site look like a generic dashboard template. Give it a distinctive visual identity inspired by nature, exploration, and positive community action.
+
+## 2. Location-Based Exploration
+
+Allow users to grant location permission through their browser or manually enter a location if they do not want to share their current location.
+
+Display nearby outdoor places on an interactive map, such as:
+- Public parks and gardens.
+- Public walking areas and trails.
+- Community green spaces.
+- Other suitable public outdoor locations.
+
+Use Leaflet with OpenStreetMap data or another appropriate mapping solution. Clearly display map attribution and follow the selected map provider's usage requirements.
+
+Let users select a location to view its details and discover challenges they can complete there.
+
+If location permission is denied or location services fail, the website must still work through manual location selection or a demo location.
+
+Never expose a user's precise home location publicly.
+
+## 3. Outdoor Challenges
+
+Create a challenge system with different activities that encourage people to go outside and make a positive difference.
+
+Include the following challenge types:
+
+**A. Explore and Photograph**
+- Visit a suitable outdoor location.
+- Take a photograph at the location.
+- Submit the photograph as evidence of the challenge.
+
+**B. Plant Something**
+- Plant a seed, sapling, or suitable plant.
+- Upload a photograph showing the activity or result.
+- Where appropriate, allow optional follow-up photographs to document growth over time.
+
+**C. Clean Up Your Surroundings**
+- Identify a suitable public area that needs cleaning.
+- Upload a before photograph.
+- Safely clean up an appropriate area.
+- Upload an after photograph.
+- Submit both photographs for verification.
+
+Safety must be prioritised. Do not encourage users to handle hazardous waste, sharp objects, chemicals, or unknown materials. Challenges should be restricted to safe activities and suitable locations.
+
+**D. Nature and Outdoor Activities**
+- Explore a park or garden.
+- Photograph plants, trees, or other natural features.
+- Complete a nature walk.
+- Participate in other simple outdoor activities.
+
+Each challenge should display its title, description, category, suggested location, difficulty, point value, completion instructions, and required evidence.
+
+Create a few predefined sample challenges so the website is useful immediately.
+
+## 4. Challenge Timing and Bonus Points
+
+Challenges should generally be available for users to complete at any time.
+
+However, some challenges should have a featured or limited-time window. Completing a featured challenge within its designated period should award **2× points**.
+
+For example, if a challenge normally awards 50 points, completing it during its featured period should award 100 points.
+
+The server must calculate the final score using the challenge rules and the submission time. Do not trust a score calculated only by the browser.
+
+Clearly display whether a challenge is ongoing, featured, or outside its bonus period.
+
+## 5. AI-Powered Photo Verification
+
+Use a genuine open-weight vision-language model, such as a suitable Gemma vision model or another compatible model, to assess submitted photographs.
+
+The model should evaluate whether the uploaded image appears consistent with the selected challenge.
+
+Examples:
+- For a planting challenge, assess whether the image appears to show a planting-related activity.
+- For a cleanup challenge, assess whether the before and after images appear consistent with the claimed cleanup.
+- For a nature challenge, assess whether the photograph contains the relevant natural features.
+- For a location-photo challenge, assess whether the image is consistent with the challenge's visual requirements.
+
+The AI should return a structured assessment containing:
+- Whether the image appears relevant to the challenge.
+- A confidence estimate or confidence category.
+- A short explanation.
+- Any reason the submission needs another review.
+
+Use a server-side API route to call the model. Keep secret keys out of frontend code and never expose them to users.
+
+Do not hardcode every submission as verified. The verification process must genuinely use the selected model. If the model is unavailable, show a clear pending or unavailable status rather than falsely claiming verification succeeded.
+
+Treat AI output as an assessment, not unquestionable proof. Allow uncertain or disputed submissions to remain pending review.
+
+Photographs alone cannot reliably prove when or where they were captured. If location or time evidence is needed, use separately collected evidence where appropriate, explain its limitations, and do not claim that the model can establish facts it cannot verify.
+
+## 6. Points and Rewards
+
+Create a points system that rewards users for successfully completing challenges.
+
+Each challenge should have a defined base score. Apply the 2× bonus when the challenge's featured time window and scoring rules permit it.
+
+The backend should:
+- Validate the challenge and submission.
+- Check the verification result.
+- Apply the correct scoring rules.
+- Prevent accidental duplicate awards for the same submission.
+- Record the awarded points and the reason for the award.
+
+Display the user's total points, completed challenges, recent achievements, and progress.
+
+For the initial prototype, sample users and demo leaderboard entries are acceptable, but label demo data honestly. Do not imply that fake users or scores are real community activity.
+
+## 7. Leaderboards and Community Rankings
+
+Build a leaderboard page with different ranking views:
+
+- **Global leaderboard:** rankings across all participating users.
+- **Local leaderboard:** rankings within a selected area or approximate region.
+- **Category leaderboard:** rankings based on particular types of positive actions, such as planting, cleanup, or nature exploration.
+
+Show usernames, points, completed challenges, and rankings.
+
+Use privacy-conscious location handling. Display approximate regions rather than users' exact coordinates or home addresses. Avoid publishing submitted photographs or personal location details without the user's consent.
+
+If a backend is available, persist user submissions, points, and leaderboard data. Otherwise, provide a clear demo mode that demonstrates the intended experience.
+
+## 8. Recommended Technology
+
+Use the following stack where practical:
+
+- Next.js with TypeScript for the website and server-side routes.
+- Tailwind CSS for responsive styling.
+- Leaflet and OpenStreetMap for interactive maps.
+- An appropriate OpenStreetMap data source for nearby public places.
+- An open-weight vision-language model for photo assessment.
+- A compatible model endpoint or local inference runtime, depending on available resources.
+- Supabase or another suitable database for persistent storage and authentication if time permits.
+
+Keep the architecture modular so the mapping provider, AI model, database, and scoring rules can be changed independently.
+
+Do not introduce unnecessary dependencies or complicated infrastructure when a simpler implementation will work.
+
+## 9. Open Innovation and Privacy
+
+Open-weight AI must perform a meaningful task in the application, particularly photo relevance assessment.
+
+Document which model is used, how the model is accessed, and where image processing occurs. Be precise about the model's licence and capabilities.
+
+Do not describe the system as fully private or offline unless the implementation actually supports that claim.
+
+Request location access only when necessary, provide a manual alternative, keep API credentials server-side, and avoid storing unnecessary personal information.
+
+## 10. Implementation Priorities
+
+Prioritise a complete, working user journey over a large number of unfinished features.
+
+Build in this order:
+
+1. A polished landing page and navigation.
+2. A challenge listing page with predefined challenges.
+3. An interactive map with
