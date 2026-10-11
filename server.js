@@ -1,5 +1,5 @@
 /**
- * Touch Grass — AI-Powered Outdoor Challenge Platform
+ * WanderWild — Adventures & Exploration Platform
  * Backend Server & Multimodal Verification Runtime
  */
 
@@ -380,7 +380,7 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       status: 'online',
-      platform: 'Touch Grass',
+      platform: 'WanderWild: Adventures & Exploration',
       version: '1.0.0',
       visionModel: VISION_MODEL,
       modelReady: Boolean(GEMINI_API_KEY),
@@ -593,7 +593,7 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, () => {
   console.log(`\n========================================================`);
-  console.log(`🌿 Touch Grass Platform Server Running!`);
+  console.log(`🌿 WanderWild Platform Server Running!`);
   console.log(`👉 Web Application: http://localhost:${PORT}`);
   console.log(`🤖 AI Vision Model: ${VISION_MODEL} (Google Multimodal)`);
   console.log(`🔑 Server API Key:  ${GEMINI_API_KEY ? 'Active & Configured' : 'Missing'}`);

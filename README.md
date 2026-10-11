@@ -1,10 +1,10 @@
-# 🌿 Touch Grass — An AI-Powered Outdoor Challenge Platform
+# 🌿 WanderWild — Adventures & Exploration Platform
 
-> **Theme:** Touch Grass &bull; **Core AI:** Multimodal Open-Weight Vision Model (Google Gemini 3.8 Flash) &bull; **Mapping:** Leaflet & OpenStreetMap
+> **Hackathon Theme:** Touch Grass &bull; **Core AI:** Multimodal Vision Model (Google Gemini 3.8 Flash) &bull; **Mapping:** Leaflet & OpenStreetMap
 
-**Touch Grass** is a modern, gamified web platform that encourages people to spend more time outdoors, explore green spaces, care for nature, and perform positive community actions.
+**WanderWild: Adventures & Exploration** is an aesthetic, gamified web platform that encourages people to spend more time outdoors, explore green spaces, care for nature, and perform positive community actions.
 
-By combining real-world exploration, environmental stewardship, community participation, and server-side multimodal AI verification, Touch Grass turns outdoor activities into engaging challenges where users earn points, climb leaderboards, and create tangible ecological impact.
+By combining real-world exploration, environmental stewardship, community participation, and server-side multimodal AI verification, WanderWild turns outdoor activities into engaging adventure quests where users earn points, climb leaderboards, and create tangible ecological impact.
 
 ---
 

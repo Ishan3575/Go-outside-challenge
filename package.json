@@ -1,7 +1,7 @@
 {
-  "name": "touch-grass",
+  "name": "wanderwild",
   "version": "1.0.0",
-  "description": "An AI-Powered Outdoor Challenge Platform — Gamified Nature Exploration, Community Action & Multimodal Verification",
+  "description": "WanderWild — Adventures & Exploration Platform: Gamified Nature Exploration, Community Action & Multimodal Verification",
   "main": "server.js",
   "type": "module",
   "scripts": {
