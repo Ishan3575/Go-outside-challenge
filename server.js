@@ -33,6 +33,7 @@ function loadEnv() {
 loadEnv();
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
+const HOST = process.env.HOST || '0.0.0.0';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const VISION_MODEL = 'gemini-3.8-flash';
 
@@ -591,10 +592,10 @@ const server = http.createServer(async (req, res) => {
   });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, HOST, () => {
   console.log(`\n========================================================`);
   console.log(`🌿 WanderWild Platform Server Running!`);
-  console.log(`👉 Web Application: http://localhost:${PORT}`);
+  console.log(`👉 Web Application: http://${HOST}:${PORT}`);
   console.log(`🤖 AI Vision Model: ${VISION_MODEL} (Google Multimodal)`);
   console.log(`🔑 Server API Key:  ${GEMINI_API_KEY ? 'Active & Configured' : 'Missing'}`);
   console.log(`========================================================\n`);

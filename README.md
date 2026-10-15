@@ -2,6 +2,8 @@
 
 > **Hackathon Theme:** Touch Grass &bull; **Core AI:** Multimodal Vision Model (Google Gemini 3.8 Flash) &bull; **Mapping:** Leaflet & OpenStreetMap
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Ishan3575/Go-outside-challenge)
+
 **WanderWild: Adventures & Exploration** is an aesthetic, gamified web platform that encourages people to spend more time outdoors, explore green spaces, care for nature, and perform positive community actions.
 
 By combining real-world exploration, environmental stewardship, community participation, and server-side multimodal AI verification, WanderWild turns outdoor activities into engaging adventure quests where users earn points, climb leaderboards, and create tangible ecological impact.
@@ -65,7 +67,19 @@ By combining real-world exploration, environmental stewardship, community partic
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start & Live Deployment
+
+### 🌐 Deploy Live with 1-Click (Render)
+You can deploy WanderWild live to the web for free in under 2 minutes:
+1. Click the button below:  
+   [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Ishan3575/Go-outside-challenge)
+2. Sign in with your GitHub account on [Render](https://render.com).
+3. Paste your `GEMINI_API_KEY` when prompted.
+4. Render immediately builds and provisions a public HTTPS URL (e.g., `https://wanderwild-app.onrender.com`)!
+
+---
+
+### 💻 Local Development
 
 ### Prerequisites
 - Node.js (v18+ or v24+ recommended)
